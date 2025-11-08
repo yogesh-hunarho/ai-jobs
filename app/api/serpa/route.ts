@@ -1,8 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import NextCors from "nextjs-cors";
+
 
 // https://rapidapi.com/fantastic-jobs-fantastic-jobs-default/api/internships-api/playground/apiendpoint_54fae4b2-d2ed-44f9-923d-2bd097ba9194
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
+  //@ts-ignore
+   await NextCors(req, NextResponse.next(), {
+    methods: ["GET", "OPTIONS"],
+    origin: "*", // or specific domains
+    optionsSuccessStatus: 200,
+  });
   const { searchParams } = new URL(req.url);
   const title = searchParams.get("title") || "";
   const location = searchParams.get("location") || "";
