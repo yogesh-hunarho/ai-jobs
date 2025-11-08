@@ -6,9 +6,9 @@ import { NextResponse } from "next/server";
 
 
 const allowedOrigins = [
-  "http://localhost:3000", // another project
-  "https://dashboardn.hunarho.com", // production frontend
-  "https://dashboarduat.hunarho.com/"
+  "http://localhost:3000", // local dev
+  "https://dashboardn.hunarho.com", // production
+  "https://dashboarduat.hunarho.com" // note: removed trailing slash
 ];
 
 
@@ -34,7 +34,6 @@ export async function GET(req: Request) {
     });
     const data = await response.json();
     const res = NextResponse.json(data);
-
     if (allowedOrigins.includes(origin)) {
       res.headers.set("Access-Control-Allow-Origin", origin);
     }
