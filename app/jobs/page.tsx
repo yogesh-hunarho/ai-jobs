@@ -16,7 +16,8 @@ export default function Page() {
         `/api/jobs?title=${encodeURIComponent(title)}&location=${encodeURIComponent(location)}&offset=${offset}`
       );
       const data = await res.json();
-      setJobs(data || []);
+      console.log("dadasasdasd",data)
+      setJobs(data?.data || []);
     } catch (err) {
       console.error(err);
     }
