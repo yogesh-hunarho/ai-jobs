@@ -1,16 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
-import NextCors from "nextjs-cors";
-
+import { NextResponse } from "next/server";
 
 // https://rapidapi.com/fantastic-jobs-fantastic-jobs-default/api/internships-api/playground/apiendpoint_54fae4b2-d2ed-44f9-923d-2bd097ba9194
 
-export async function GET(req: NextRequest) {
-  //@ts-ignore
-   await NextCors(req, NextResponse.next(), {
-    methods: ["GET", "OPTIONS"],
-    origin: "*", // or specific domains
-    optionsSuccessStatus: 200,
-  });
+
+
+
+const allowedOrigins = [
+  "http://localhost:3000", // another project
+  "https://dashboardn.hunarho.com", // production frontend
+  "https://dashboarduat.hunarho.com/"
+];
+
+
+export async function GET(req: Request) {
+  const origin = req.headers.get("origin") || "";
+
   const { searchParams } = new URL(req.url);
   const title = searchParams.get("title") || "";
   const location = searchParams.get("location") || "";
@@ -28,11 +32,32 @@ export async function GET(req: NextRequest) {
         "x-rapidapi-host": "internships-api.p.rapidapi.com",
       },
     });
-
     const data = await response.json();
+    const res = NextResponse.json(data);
+
+    if (allowedOrigins.includes(origin)) {
+      res.headers.set("Access-Control-Allow-Origin", origin);
+    }
+    res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+    res.headers.set("Access-Control-Allow-Headers", "Content-Type");
+
+
     return NextResponse.json(data);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+
+export async function OPTIONS(req: Request) {
+  const origin = req.headers.get("origin") || "";
+  const res = new NextResponse(null, { status: 204 });
+  if (allowedOrigins.includes(origin)) {
+    res.headers.set("Access-Control-Allow-Origin", origin);
+  }
+  res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type");
+  return res;
+}
+
