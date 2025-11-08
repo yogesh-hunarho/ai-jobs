@@ -13,7 +13,7 @@ const allowedOrigins = [
 
 
 export async function GET(req: Request) {
-  const origin = req.headers.get("origin") || "";
+  // const origin = req.headers.get("origin") || "";
 
   const { searchParams } = new URL(req.url);
   const title = searchParams.get("title") || "";
@@ -33,12 +33,12 @@ export async function GET(req: Request) {
       },
     });
     const data = await response.json();
-    const res = NextResponse.json(data);
-    if (allowedOrigins.includes(origin)) {
-      res.headers.set("Access-Control-Allow-Origin", origin);
-    }
-    res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
-    res.headers.set("Access-Control-Allow-Headers", "Content-Type");
+    // const res = NextResponse.json(data);
+    // if (allowedOrigins.includes(origin)) {
+    //   res.headers.set("Access-Control-Allow-Origin", origin);
+    // }
+    // res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+    // res.headers.set("Access-Control-Allow-Headers", "Content-Type");
 
 
     return NextResponse.json(data);
@@ -49,14 +49,14 @@ export async function GET(req: Request) {
 }
 
 
-export async function OPTIONS(req: Request) {
-  const origin = req.headers.get("origin") || "";
-  const res = new NextResponse(null, { status: 204 });
-  if (allowedOrigins.includes(origin)) {
-    res.headers.set("Access-Control-Allow-Origin", origin);
-  }
-  res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.headers.set("Access-Control-Allow-Headers", "Content-Type");
-  return res;
-}
+// export async function OPTIONS(req: Request) {
+//   const origin = req.headers.get("origin") || "";
+//   const res = new NextResponse(null, { status: 204 });
+//   if (allowedOrigins.includes(origin)) {
+//     res.headers.set("Access-Control-Allow-Origin", origin);
+//   }
+//   res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+//   res.headers.set("Access-Control-Allow-Headers", "Content-Type");
+//   return res;
+// }
 
