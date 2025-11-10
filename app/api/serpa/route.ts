@@ -2,19 +2,7 @@ import { NextResponse } from "next/server";
 
 // https://rapidapi.com/fantastic-jobs-fantastic-jobs-default/api/internships-api/playground/apiendpoint_54fae4b2-d2ed-44f9-923d-2bd097ba9194
 
-
-
-
-const allowedOrigins = [
-  "http://localhost:3000", // local dev
-  "https://dashboardn.hunarho.com", // production
-  "https://dashboarduat.hunarho.com" // note: removed trailing slash
-];
-
-
 export async function GET(req: Request) {
-  // const origin = req.headers.get("origin") || "";
-
   const { searchParams } = new URL(req.url);
   const title = searchParams.get("title") || "";
   const location = searchParams.get("location") || "";
@@ -33,30 +21,22 @@ export async function GET(req: Request) {
       },
     });
     const data = await response.json();
-    // const res = NextResponse.json(data);
-    // if (allowedOrigins.includes(origin)) {
-    //   res.headers.set("Access-Control-Allow-Origin", origin);
-    // }
-    // res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
-    // res.headers.set("Access-Control-Allow-Headers", "Content-Type");
+    let filteredJobs = data;
+    if (location) {
+      filteredJobs = data.filter((job:any) => {
+        const allLocations = job.locations_derived || [];
+        return allLocations.some((loc:any) =>
+          loc.toLowerCase().includes(location)
+        );
+      });
+    }
+    if (filteredJobs.length === 0) {
+      return NextResponse.json({ message: "No jobs found", results: [] });
+    }
 
-
-    return NextResponse.json(data);
+    return NextResponse.json(filteredJobs);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
-
-
-// export async function OPTIONS(req: Request) {
-//   const origin = req.headers.get("origin") || "";
-//   const res = new NextResponse(null, { status: 204 });
-//   if (allowedOrigins.includes(origin)) {
-//     res.headers.set("Access-Control-Allow-Origin", origin);
-//   }
-//   res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
-//   res.headers.set("Access-Control-Allow-Headers", "Content-Type");
-//   return res;
-// }
-
