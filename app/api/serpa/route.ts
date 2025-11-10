@@ -21,20 +21,8 @@ export async function GET(req: Request) {
       },
     });
     const data = await response.json();
-    let filteredJobs = data;
-    if (location) {
-      filteredJobs = data.filter((job:any) => {
-        const allLocations = job.locations_derived || [];
-        return allLocations.some((loc:any) =>
-          loc.toLowerCase().includes(location)
-        );
-      });
-    }
-    if (filteredJobs.length === 0) {
-      return NextResponse.json({ message: "No jobs found", results: [] });
-    }
 
-    return NextResponse.json(filteredJobs);
+    return NextResponse.json(data);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
